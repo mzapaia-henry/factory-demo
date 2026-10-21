@@ -1,2 +1,9 @@
 # factory-demo
-Demo de Henry Factory: una app de Next.js que explica qué es Factory
+
+A small Next.js app that explains what Henry Factory is. It runs live inside a Factory Mission sandbox.
+
+```sh
+pnpm install
+pnpm dev     # http://localhost:3000
+pnpm build
+```
