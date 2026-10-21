@@ -50,8 +50,10 @@ body {
   padding: 0;
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -298,6 +300,9 @@ p {
   .hero-inner > :nth-child(3) {
     animation-delay: 0.24s;
   }
+  .hero-inner > :nth-child(4) {
+    animation-delay: 0.36s;
+  }
 }
 
 @keyframes converge {
@@ -341,6 +346,52 @@ p {
 
 .lede strong {
   color: var(--fg);
+}
+
+.demo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 36px;
+  padding: 8px 16px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent-2) 40%, transparent);
+  background: color-mix(in srgb, var(--surface) 70%, transparent);
+  backdrop-filter: blur(8px);
+  color: var(--fg);
+  font-size: 0.92rem;
+  font-weight: 500;
+  line-height: 1.35;
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  transition:
+    border-color 0.2s,
+    translate 0.2s;
+}
+
+.demo-badge:hover {
+  border-color: var(--accent-2);
+  translate: 0 -1px;
+}
+
+.demo-badge:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.demo-dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--good);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--good) 22%, transparent);
+}
+
+.demo-arrow {
+  flex: none;
+  color: var(--accent-2);
+  font-weight: 700;
 }
 
 .scroll-hint {
@@ -1211,6 +1262,136 @@ p {
   }
 }
 
+.connect {
+  margin-top: 28px;
+  max-width: 760px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 20px;
+  background: var(--bg-alt);
+}
+
+.connect-lead {
+  color: var(--fg-muted);
+  font-size: 1rem;
+}
+
+.connect-lead strong {
+  color: var(--fg);
+}
+
+.connect-row {
+  margin-top: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 10px;
+  font-size: 0.92rem;
+}
+
+.connect-row span,
+.web-line span {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border-radius: 999px;
+  padding: 1px 8px;
+}
+
+.connect-row code {
+  overflow-wrap: anywhere;
+}
+
+.connect-cmd {
+  margin: 12px 0 0;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #0a0a0a;
+  color: #ededed;
+  border: 1px solid #262626;
+  font-size: 0.88rem;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.connect-note {
+  margin-top: 10px;
+  font-size: 0.9rem;
+  color: var(--fg-muted);
+}
+
+.connect-note a,
+.web-line a {
+  color: var(--accent);
+  font-weight: 500;
+  text-underline-offset: 3px;
+}
+
+.web-line {
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  color: var(--fg-muted);
+  font-size: 0.98rem;
+}
+
+.web-line span {
+  margin-right: 6px;
+  vertical-align: 2px;
+}
+
+.examples-label {
+  margin-top: 28px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--fg-muted);
+}
+
+.examples {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 8px;
+  max-width: 760px;
+}
+
+.examples li {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 14px;
+  background: var(--bg-alt);
+  color: var(--fg-muted);
+  font-size: 0.98rem;
+}
+
+.ask-note {
+  margin-top: 10px;
+  max-width: 760px;
+  font-size: 0.92rem;
+  color: var(--fg-muted);
+}
+
+.ask-note code {
+  font-size: 0.85rem;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+
+.examples.ask li {
+  border-left: 3px solid color-mix(in srgb, var(--accent-2) 60%, transparent);
+}
+
 .steps {
   list-style: none;
   padding: 0;
@@ -1319,5 +1500,10 @@ p {
   }
   .terminal pre {
     padding: 16px;
+  }
+  .demo-badge {
+    border-radius: 18px;
+    font-size: 0.85rem;
+    text-align: left;
   }
 }

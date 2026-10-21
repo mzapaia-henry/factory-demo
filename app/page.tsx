@@ -32,6 +32,23 @@ const entities = [
   },
 ];
 
+// The MCP endpoint that works today; it will move to api.factory.soyhenry.com.
+const FACTORY_MCP_URL = "https://henry-factory.vercel.app/api/mcp";
+const FACTORY_CONNECT_DOCS = "https://api.factory.soyhenry.com/docs/connect";
+const FACTORY_WEB = "https://factory.soyhenry.com";
+
+const examples = [
+  "Add a light/dark theme toggle to the top right of the page.",
+  "Rewrite the hero headline in Spanish and keep the gradient.",
+  "Add a short FAQ about Missions right before this section.",
+];
+
+const questions = [
+  "How does Factory work?",
+  "What Projects and Missions do I have?",
+  "Explain what a Coordinator does.",
+];
+
 export default function Home() {
   return (
     <main>
@@ -54,6 +71,13 @@ export default function Home() {
             when they are <strong>small and focused</strong> &mdash; one clear goal, and exactly the
             tools they need to reach it.
           </p>
+          <a className="demo-badge" href="#try-it">
+            <span className="demo-dot" aria-hidden />
+            This is a live demo page &mdash; built to be changed. Ask Factory to modify it.
+            <span className="demo-arrow" aria-hidden>
+              &darr;
+            </span>
+          </a>
         </div>
         <div className="scroll-hint" aria-hidden>
           <span>Scroll</span>
@@ -431,7 +455,7 @@ export default function Home() {
       </section>
 
       {/* ───────────── CTA ───────────── */}
-      <section className="section cta">
+      <section className="section cta" id="try-it">
         <div className="wrap reveal">
           <div className="cta-card">
             <p className="kicker">Your turn</p>
@@ -439,9 +463,27 @@ export default function Home() {
               Try changing this page &mdash; however you want &mdash; <span className="grad">from Factory.</span>
             </h2>
             <p className="body">
-              This page lives in a Factory Project. Open the Factory MCP in your agent client and
-              ask for a Mission to change it. Then watch the Journal while a focused team does it.
+              This page lives in the <strong>factory-demo</strong> Project. Connect your agent client
+              to Factory over <strong>MCP</strong>, then ask a Mission of the factory-demo Project to
+              change it. Watch the Journal while a focused team does the work and sends you a preview.
             </p>
+            <div className="connect">
+              <p className="connect-lead">
+                All operation and management of Factory happens through the <strong>MCP</strong> (and
+                the CLI). Connect once:
+              </p>
+              <p className="connect-row">
+                <span>MCP server</span>
+                <code>{FACTORY_MCP_URL}</code>
+              </p>
+              <pre className="connect-cmd" aria-label="Claude Code command">
+                <code>{`claude mcp add --transport http factory ${FACTORY_MCP_URL}`}</code>
+              </pre>
+              <p className="connect-note">
+                That&rsquo;s the Claude Code one-liner &mdash; any MCP client works.{" "}
+                <a href={FACTORY_CONNECT_DOCS}>Read the connection guide &rarr;</a>
+              </p>
+            </div>
             <div className="terminal" aria-label="Example request">
               <div className="terminal-bar" aria-hidden>
                 <i />
@@ -455,6 +497,22 @@ export default function Home() {
                 <span className="caret" aria-hidden />
               </pre>
             </div>
+            <p className="examples-label">Or try one of these</p>
+            <ul className="examples">
+              {examples.map((e) => (
+                <li key={e}>&ldquo;{e}&rdquo;</li>
+              ))}
+            </ul>
+            <p className="examples-label">Or ask Factory itself</p>
+            <p className="ask-note">
+              The MCP has built-in help, <code>factory_help</code>, that explains every concept and
+              operation &mdash; so you can learn the whole system just by asking.
+            </p>
+            <ul className="examples ask">
+              {questions.map((q) => (
+                <li key={q}>&ldquo;{q}&rdquo;</li>
+              ))}
+            </ul>
             <ol className="steps">
               <li>
                 <b>1</b> Connect the Factory MCP
@@ -466,6 +524,11 @@ export default function Home() {
                 <b>3</b> Watch it ship
               </li>
             </ol>
+            <p className="web-line">
+              <span>Web</span> Monitor everything at{" "}
+              <a href={FACTORY_WEB}>factory.soyhenry.com</a> &mdash; a dashboard, an overview of every
+              Mission and a few quick actions. Sign in and try it.
+            </p>
           </div>
         </div>
         <footer className="foot">Factory &middot; built with focus</footer>
