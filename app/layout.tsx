@@ -4,9 +4,9 @@ import { GeistMono } from "geist/font/mono";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Henry Factory",
+  title: "Factory — It's all about focus",
   description:
-    "A team of AI agents plus governance. Organizations prepare environments per Project and hand work to agent teams.",
+    "Small, focused AI agents in their own sandboxes, organized in clear roles and governed by a single Core.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

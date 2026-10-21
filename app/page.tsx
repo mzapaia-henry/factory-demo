@@ -1,299 +1,486 @@
-const workKinds = [
-  {
-    title: "Software",
-    body: "Clone a repo, implement a change test-first, run the checks and open a Pull Request. The first specialization, not the only one.",
-  },
-  {
-    title: "Analysis & research",
-    body: "Investigate a question, query data, compare options and leave a written report or an artifact the whole Project can reuse.",
-  },
-  {
-    title: "No-code content",
-    body: "Projects with zero repositories: video analysis, slide decks, documents, operating external services. First-class, not an edge case.",
-  },
+const tools = [
+  { name: "bash", note: "the shell every model already speaks" },
+  { name: "file system", note: "a real workspace to read and write" },
+  { name: "HTTP", note: "the web, through a governed egress" },
+  { name: "MCP", note: "your organization's services, brokered" },
+];
+
+const workers = [
+  { name: "Developer", note: "writes the change" },
+  { name: "Reviewer", note: "reads it with fresh eyes" },
+  { name: "Architect", note: "shapes the plan before code" },
+  { name: "Test engineer", note: "defines what done means" },
+  { name: "Browser", note: "clicks through the real thing" },
+  { name: "Second opinion", note: "a different model, on purpose" },
 ];
 
 const entities = [
   {
-    title: "Organization",
-    body: "The root: members, shared variables, and the services and MCP connections everyone in it can use.",
+    name: "Organization",
+    what: "Where people, shared settings and the organization's services live.",
+    why: "Configure an integration once, and every team uses it safely.",
   },
   {
-    title: "Project",
-    body: "The reusable context for a kind of work: its environment recipe, policies, members and one Manager.",
+    name: "Project",
+    what: "A reusable context: its environment, its policies, its people.",
+    why: "Every Mission starts from a known-good place instead of from scratch.",
   },
   {
-    title: "Manager",
-    body: "The durable point of contact of a Project. Plans, prioritizes, launches Missions and follows them up.",
+    name: "Mission",
+    what: "A bounded unit of work, with a beginning, an end and its own sandbox.",
+    why: "A clear goal and an isolated machine keep the whole team on one thing.",
   },
-  {
-    title: "Mission",
-    body: "One concrete line of work with a start and an end, in its own sandbox restored from the Project environment.",
-  },
-  {
-    title: "Coordinator & Workers",
-    body: "The Coordinator owns the Mission and reports in its Journal. Workers are specialists it delegates to in a private team room.",
-  },
-  {
-    title: "Proxy",
-    body: "A personal agent per user and Organization. Acts with exactly that user's permissions over chat, e.g. Telegram.",
-  },
-];
-
-const steps = [
-  {
-    title: "Describe the environment",
-    body: "Each Project declares four phases: build (clone, install), start (once per Mission), run (what agents see) and stop. Each phase lists by name the variables it needs; nothing else leaks in.",
-  },
-  {
-    title: "Freeze and prepare it",
-    body: "Factory freezes the recipe into an immutable revision, builds it once in a throwaway sandbox and snapshots the result. Every Mission starts from that snapshot in seconds.",
-  },
-  {
-    title: "Hand over a Mission",
-    body: "You (or the Manager) give a Mission an objective. Its Coordinator plans, delegates to Workers and writes progress and questions to the Journal.",
-  },
-  {
-    title: "Watch, talk, decide",
-    body: "Agents ask humans through structured asks: a question, a blocker, an access request. Humans answer, review the result and decide when the Mission closes.",
-  },
-];
-
-const principles = [
-  { title: "Explicit orchestration", body: "Nothing fires on its own. A human or an agent asks for every action deliberately." },
-  { title: "Humans decide", body: "Destructive or irreversible actions only happen on an explicit human request." },
-  { title: "Secrets never travel through chat", body: "Loaded through one-time web links or stdin, encrypted at rest, never printed by an agent." },
-  { title: "No repository required", body: "Git and GitHub are tools a Project may use, never part of the core." },
-  { title: "Services are optional add-ons", body: "If one integration disappears, the rest of Factory keeps working." },
-  { title: "Earned complexity", body: "New roles, providers and abstractions only arrive when a real run needs them." },
 ];
 
 export default function Home() {
   return (
-    <>
-      <nav className="nav">
-        <div className="container nav-inner">
-          <div className="brand">
-            <span className="brand-mark" aria-hidden />
-            Henry Factory
-          </div>
-          <div className="nav-links">
-            <a href="#what">What</a>
-            <a href="#structure">Structure</a>
-            <a href="#how">How it works</a>
-            <a href="#use">Using it</a>
-          </div>
+    <main>
+      {/* ───────────── Hero ───────────── */}
+      <section className="section hero">
+        <div className="hero-glow" aria-hidden />
+        <svg className="focus-rings" viewBox="0 0 400 400" aria-hidden>
+          <circle cx="200" cy="200" r="190" />
+          <circle cx="200" cy="200" r="150" />
+          <circle cx="200" cy="200" r="110" />
+          <circle cx="200" cy="200" r="70" />
+        </svg>
+        <div className="wrap hero-inner">
+          <p className="eyebrow">Factory · a team of AI agents, plus governance</p>
+          <h1 className="hero-title">
+            It&rsquo;s all about <span className="grad">focus.</span>
+          </h1>
+          <p className="lede">
+            What we learned building Factory, one iteration at a time: agents do their best work
+            when they are <strong>small and focused</strong> &mdash; one clear goal, and exactly the
+            tools they need to reach it.
+          </p>
         </div>
-      </nav>
+        <div className="scroll-hint" aria-hidden>
+          <span>Scroll</span>
+          <i />
+        </div>
+      </section>
 
-      <main>
-        <header className="hero">
-          <div className="container">
-            <span className="eyebrow">Henry Factory</span>
-            <h1>A team of AI agents, plus governance.</h1>
-            <p>
-              Factory lets an organization prepare a ready-to-run environment per Project and hand
-              work, called Missions, to teams of agents. You can watch and talk to them while the
-              work happens.
+      {/* ───────────── Harness + Sandbox ───────────── */}
+      <section className="section">
+        <div className="wrap split">
+          <div className="reveal">
+            <p className="kicker">01 &middot; The building block</p>
+            <h2>
+              Harness <span className="plus">+</span> sandbox.
+            </h2>
+            <p className="body">
+              A harness like <strong>Claude Code</strong> or <strong>Codex</strong> is the agent&rsquo;s
+              mind. A sandbox &mdash; today a <strong>Vercel Sandbox</strong> &mdash; is its
+              workbench: everything it needs to actually solve problems.
             </p>
-            <div className="hero-tags">
-              <span className="tag">Durable agent teams</span>
-              <span className="tag">Isolated sandboxes</span>
-              <span className="tag">MCP &amp; CLI first</span>
-              <span className="tag">Human in control</span>
+            <p className="body">
+              Because every byte leaves through the sandbox, it is also where traffic is
+              <strong> observed and governed</strong>. And Factory is provider-agnostic: sandboxes and
+              harnesses are interchangeable parts.
+            </p>
+            <div className="swap">
+              <span className="chip">Claude Code</span>
+              <span className="chip">Codex</span>
+              <span className="swap-sep">in</span>
+              <span className="chip">Vercel Sandbox</span>
+              <span className="chip ghost">any sandbox</span>
             </div>
           </div>
-        </header>
 
-        <section className="section" id="what">
-          <div className="container">
-            <div className="label">What it does</div>
-            <h2>Any work with a start and an end.</h2>
-            <p className="section-lead">
-              A Mission can write code, but it can just as well investigate, analyze data, operate a
-              service or produce content. Software development is the first specialization, not a
-              requirement.
-            </p>
-            <div className="grid grid-3">
-              {workKinds.map((k) => (
-                <div className="card" key={k.title}>
-                  <h3>{k.title}</h3>
-                  <p>{k.body}</p>
-                </div>
-              ))}
+          <div className="sandbox reveal" aria-label="A harness inside a sandbox">
+            <div className="sandbox-label">sandbox</div>
+            <div className="harness">
+              <div className="harness-dot" aria-hidden />
+              <div>
+                <div className="harness-name">harness</div>
+                <div className="harness-sub">Claude Code · Codex</div>
+              </div>
             </div>
-          </div>
-        </section>
-
-        <section className="section" id="structure">
-          <div className="container">
-            <div className="label">How it is organized</div>
-            <h2>One hierarchy, clear ownership.</h2>
-            <p className="section-lead">
-              The abstract part (Organization, Project, environment) exists before anything runs.
-              The concrete part (Manager, Missions and their agents) is the actual execution.
-            </p>
-
-            <div className="diagram" aria-label="Factory hierarchy diagram">
-              <div className="org-row">
-                <div className="side left">
-                  <div className="node dashed">
-                    <strong>Proxy</strong>
-                    <span>one per user · same permissions</span>
-                  </div>
-                </div>
-                <div className="node primary">
-                  <strong>Organization</strong>
-                  <span>members · variables</span>
-                </div>
-                <div className="side right">
-                  <div className="node dashed">
-                    <strong>Services &amp; MCPs</strong>
-                    <span>Linear · Drive · GitHub · storage</span>
-                  </div>
-                </div>
-              </div>
-              <div className="connector" />
-              <div className="node">
-                <strong>Project</strong>
-                <span>environment · policies · members</span>
-              </div>
-              <div className="connector" />
-              <div className="node">
-                <strong>Manager</strong>
-                <span>one per Project · durable</span>
-              </div>
-              <div className="connector" />
-              <div className="missions">
-                {["Mission A", "Mission B"].map((m) => (
-                  <div className="mission" key={m}>
-                    <div className="mission-title">{m}</div>
-                    <div className="mission-sub">own sandbox · Journal · team room</div>
-                    <div className="chips">
-                      <span className="chip lead">Coordinator</span>
-                      <span className="chip">Worker</span>
-                      <span className="chip">Worker</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <p className="legend">
-                The Manager talks to each Coordinator through the Mission Journal; the Coordinator
-                coordinates its Workers in a private team room. Dashed boxes live at the
-                Organization level and serve every Project.
-              </p>
-            </div>
-
-            <div style={{ height: 32 }} />
-            <div className="grid grid-3">
-              {entities.map((e) => (
-                <div className="card" key={e.title}>
-                  <h3>{e.title}</h3>
-                  <p>{e.body}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        <section className="section" id="how">
-          <div className="container">
-            <div className="label">How it works</div>
-            <h2>From recipe to running team.</h2>
-            <p className="section-lead">
-              Agents never share a machine with Factory&apos;s own credentials. Every Mission gets a
-              fresh sandbox, and Core decides what each phase is allowed to see.
-            </p>
-            <ol className="steps">
-              {steps.map((s) => (
-                <li key={s.title}>
-                  <div>
-                    <h3>{s.title}</h3>
-                    <p>{s.body}</p>
-                  </div>
+            <ul className="tools">
+              {tools.map((t) => (
+                <li key={t.name}>
+                  <code>{t.name}</code>
+                  <span>{t.note}</span>
                 </li>
               ))}
-            </ol>
+            </ul>
+            <div className="egress">
+              <svg viewBox="0 0 24 24" aria-hidden>
+                <path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z" />
+              </svg>
+              governed egress
+            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="section" id="services">
-          <div className="container">
-            <div className="label">Services &amp; harnesses</div>
-            <h2>Plug in what you need, keep the core small.</h2>
-            <p className="section-lead">
-              Anything that is not the core contract enters as a plug-and-play platform service.
+      {/* ───────────── Use what the model knows ───────────── */}
+      <section className="section alt">
+        <div className="wrap">
+          <div className="reveal center">
+            <p className="kicker">02 &middot; Don&rsquo;t fight the training</p>
+            <h2>
+              Use what the model <span className="grad">already knows.</span>
+            </h2>
+            <p className="body narrow">
+              Models are trained on shells, CLIs and open protocols. Give them exactly that and get
+              out of the way. Every bespoke mechanism &mdash; even something as well-meant as a
+              shared memory &mdash; is a little bit of noise.
             </p>
-            <div className="grid grid-2">
-              <div className="card">
-                <h3>Organization services</h3>
-                <p>
-                  Configured once per Organization (Linear, Google Drive, artifact storage,
-                  notifications). Credentials stay encrypted in Core; agents call them on demand
-                  through <code>factory service …</code> and never hold the token.
-                </p>
+          </div>
+          <div className="signal reveal">
+            <div className="signal-col">
+              <h3>Signal</h3>
+              <ul>
+                <li><code>git</code>, <code>curl</code>, <code>grep</code></li>
+                <li>a real file system</li>
+                <li>a CLI with <code>--help</code></li>
+                <li>standard MCP servers</li>
+              </ul>
+              <svg className="wave clean" viewBox="0 0 300 60" aria-hidden>
+                <path d="M0 30 Q 37.5 0 75 30 T 150 30 T 225 30 T 300 30" />
+              </svg>
+            </div>
+            <div className="signal-col noisy">
+              <h3>Noise</h3>
+              <ul>
+                <li>custom tool zoos</li>
+                <li>hidden side channels</li>
+                <li>clever shared memories</li>
+                <li>formats it has never seen</li>
+              </ul>
+              <svg className="wave" viewBox="0 0 300 60" aria-hidden>
+                <path d="M0 30 L12 12 L22 44 L34 18 L45 50 L58 8 L70 38 L82 22 L95 52 L108 14 L120 40 L132 6 L146 46 L158 24 L170 54 L184 10 L196 36 L210 20 L222 48 L236 12 L248 42 L262 16 L274 50 L288 26 L300 30" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────── Roles ───────────── */}
+      <section className="section">
+        <div className="wrap">
+          <div className="reveal center">
+            <p className="kicker">03 &middot; The real game</p>
+            <h2>
+              It all comes down to <span className="grad">roles.</span>
+            </h2>
+            <p className="body narrow">
+              Multi-agent design is the art of drawing the boundaries. Too wide and an agent drowns
+              in scope. Too narrow and work turns into a hand-off game nobody can control.
+            </p>
+          </div>
+          <div className="spectrum reveal">
+            <div className="spectrum-bar" aria-hidden>
+              <span className="spectrum-pin" />
+            </div>
+            <div className="spectrum-cards">
+              <div className="spec-card bad">
+                <h3>Too broad</h3>
+                <p>Too much scope. It gets confused, loses the thread and performs worse.</p>
               </div>
-              <div className="card">
-                <h3>Pluggable harnesses</h3>
-                <p>
-                  Each agent runs on a harness behind one small contract: start a session, continue
-                  a turn, check if it is busy. Claude Code and Codex are implemented today, with a
-                  model per role (Manager, Coordinator, Worker).
-                </p>
+              <div className="spec-card good">
+                <h3>Just right</h3>
+                <p>One clear focus, the right tools, a clean hand-off. This is where Factory lives.</p>
+              </div>
+              <div className="spec-card bad">
+                <h3>Too narrow</h3>
+                <p>Endless token ping-pong between agents. Costly, slow and impossible to steer.</p>
               </div>
             </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="section" id="use">
-          <div className="container">
-            <div className="split">
-              <div>
-                <div className="label">How you use it</div>
-                <h2>Everything through MCP or the CLI.</h2>
-                <p className="section-lead" style={{ marginBottom: 24 }}>
-                  Talk to Factory from your own MCP client (Claude, Codex, any agent) or from the{" "}
-                  <code>factory</code> CLI. Prefer chat? Your Proxy takes requests over Telegram.
-                  The web app is read-only: a place to look at Projects, Journals and asks, not to
-                  operate them.
-                </p>
-              </div>
-              <div className="terminal" aria-label="Example CLI session">
-                <div className="c"># from any MCP client: one tool, many operations</div>
-                <div>factory_request mission.create</div>
-                <div>&nbsp;&nbsp;objective: &quot;Analyze last month&apos;s churn&quot;</div>
-                <div className="c"># or from the CLI: what is waiting on you</div>
-                <div>$ factory me missions</div>
-                <div className="c"># follow a Mission&apos;s Journal</div>
-                <div>$ factory room read journal:&lt;mission-id&gt;</div>
-              </div>
-            </div>
+      {/* ───────────── Entities: Org → Project → Mission ───────────── */}
+      <section className="section alt">
+        <div className="wrap">
+          <div className="reveal center">
+            <p className="kicker">04 &middot; The shape of the work</p>
+            <h2>Organization. Project. Mission.</h2>
+            <p className="body narrow">Each layer narrows the focus of the one above it.</p>
           </div>
-        </section>
+          <ol className="nest reveal">
+            {entities.map((e, i) => (
+              <li key={e.name} className={`nest-${i}`}>
+                <h3>{e.name}</h3>
+                <p className="what">{e.what}</p>
+                <p className="why">
+                  <span>Why</span> {e.why}
+                </p>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
 
-        <section className="section" id="principles">
-          <div className="container">
-            <div className="label">Principles</div>
-            <h2>Open by default, closed where it matters.</h2>
-            <div style={{ height: 24 }} />
-            <ul className="principles">
-              {principles.map((p) => (
-                <li key={p.title}>
-                  <strong>{p.title}</strong>
-                  <span>{p.body}</span>
+      {/* ───────────── Coordinator + Workers ───────────── */}
+      <section className="section">
+        <div className="wrap split">
+          <div className="reveal">
+            <p className="kicker">05 &middot; Inside a Mission</p>
+            <h2>
+              One Coordinator.
+              <br />
+              <span className="grad">Specialist Workers.</span>
+            </h2>
+            <p className="body">
+              The <strong>Coordinator</strong> owns the Mission: it plans, delegates and decides when
+              the work is done. <strong>Workers</strong> are specialists it calls on, each with its
+              own role, harness and model &mdash; a fast model to browse, a strong one to design, a
+              different vendor for the second opinion.
+            </p>
+            <p className="why-line">
+              <span>Why</span> Focus. Each agent holds one job in its head, never all of them.
+            </p>
+          </div>
+          <div className="team reveal" aria-label="A Coordinator delegating to Workers">
+            <div className="coord">
+              <span className="node-dot" aria-hidden /> Coordinator
+            </div>
+            <svg className="fan" viewBox="0 0 300 40" preserveAspectRatio="none" aria-hidden>
+              <path d="M150 0 V12 M75 40 V24 Q75 12 87 12 H213 Q225 12 225 24 V40" />
+            </svg>
+            <ul className="workers">
+              {workers.map((w) => (
+                <li key={w.name}>
+                  <strong>{w.name}</strong>
+                  <span>{w.note}</span>
                 </li>
               ))}
             </ul>
           </div>
-        </section>
-      </main>
-
-      <footer className="footer">
-        <div className="container footer-inner">
-          <span>Henry Factory · built by Henry</span>
-          <span>This page is served live from a Factory Mission sandbox.</span>
         </div>
-      </footer>
-    </>
+      </section>
+
+      {/* ───────────── Manager + Proxy ───────────── */}
+      <section className="section alt">
+        <div className="wrap">
+          <div className="reveal center">
+            <p className="kicker">06 &middot; Above the Missions</p>
+            <h2>
+              A Manager per Project.
+              <br />
+              <span className="grad">A Proxy per person.</span>
+            </h2>
+          </div>
+          <div className="duo reveal">
+            <article className="card">
+              <div className="card-icon" aria-hidden>
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="5" r="2.5" />
+                  <circle cx="5" cy="19" r="2.5" />
+                  <circle cx="19" cy="19" r="2.5" />
+                  <path d="M12 7.5V12M12 12L6.5 17M12 12l5.5 5" />
+                </svg>
+              </div>
+              <h3>Manager</h3>
+              <p className="what">
+                Coordinates every Mission of a Project, sets priorities and talks to the people.
+              </p>
+              <p className="why">
+                <span>Why</span> Coordinators never talk to each other &mdash; that would break their
+                focus. Someone has to see the whole board.
+              </p>
+            </article>
+            <article className="card">
+              <div className="card-icon" aria-hidden>
+                <svg viewBox="0 0 24 24">
+                  <circle cx="12" cy="8" r="3.5" />
+                  <path d="M5 20c1.2-3.6 4-5.5 7-5.5s5.8 1.9 7 5.5" />
+                </svg>
+              </div>
+              <h3>Proxy</h3>
+              <p className="what">
+                Your personal agent. It represents you, summarizes for you and decides what you
+                delegated to it &mdash; with your permissions, never more.
+              </p>
+              <p className="why">
+                <span>Why</span> People have limited attention. Your Proxy spends it only on what truly
+                needs you.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────── Diagram ───────────── */}
+      <section className="section">
+        <div className="wrap">
+          <div className="reveal center">
+            <p className="kicker">07 &middot; How it fits together</p>
+            <h2>Everyone talks in rooms.</h2>
+            <p className="body narrow">
+              Each Mission has a <strong>Journal</strong>, where the Coordinator, the Manager and
+              people meet, and a <strong>team room</strong> for the Coordinator and its Workers.
+              Work moves through <strong>asks</strong> &mdash; a question, a blocker, a request &mdash;
+              and <strong>@mentions</strong> that wake the right agent.
+            </p>
+          </div>
+
+          <div className="diagram reveal" role="img" aria-label="People talk to their Proxy, the Proxy and people talk to the Manager, the Manager talks to each Mission through its Journal, and each Coordinator talks to its Workers in the team room. Core holds every credential.">
+            <div className="dg-main">
+              <div className="dg-row">
+                <div className="dg-node person">You</div>
+                <Wire label="chat" horizontal />
+                <div className="dg-node proxy">Proxy</div>
+              </div>
+              <Wire label="asks · decisions" />
+              <div className="dg-row">
+                <div className="dg-node manager">
+                  Manager
+                  <small>one per Project</small>
+                </div>
+              </div>
+              <Wire label="Journal · asks · @mentions" />
+              <div className="dg-missions">
+                {["Mission A", "Mission B"].map((m) => (
+                  <div className="dg-mission" key={m}>
+                    <div className="dg-mission-tag">
+                      {m} <em>sandbox</em>
+                    </div>
+                    <div className="dg-node coord">Coordinator</div>
+                    <Wire label="team room" short />
+                    <div className="dg-workers">
+                      <span>Dev</span>
+                      <span>Review</span>
+                      <span>Test</span>
+                      <span>…</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="dg-note">Missions never talk to each other. The Manager does.</p>
+            </div>
+
+            <aside className="dg-core">
+              <div className="dg-core-head">
+                <svg viewBox="0 0 24 24" aria-hidden>
+                  <rect x="5" y="10" width="14" height="10" rx="2" />
+                  <path d="M8 10V7a4 4 0 0 1 8 0v3" />
+                </svg>
+                Core
+              </div>
+              <ul>
+                <li>holds every credential</li>
+                <li>brokers the organization&rsquo;s services and MCPs</li>
+                <li>authorizes people by role</li>
+                <li>audits what matters</li>
+              </ul>
+              <div className="dg-core-foot">secrets never enter a sandbox</div>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────── Core + Web ───────────── */}
+      <section className="section alt">
+        <div className="wrap">
+          <div className="reveal center">
+            <p className="kicker">08 &middot; Governance without friction</p>
+            <h2>
+              Core keeps the keys.
+              <br />
+              <span className="grad">The web just watches.</span>
+            </h2>
+          </div>
+          <div className="duo reveal">
+            <article className="card">
+              <h3>Core governs</h3>
+              <p className="what">
+                Core is the only place that stores credentials. Organization services and MCPs are
+                reached <em>through</em> Core, so an agent can use a service without ever holding its
+                key.
+              </p>
+              <p className="why">
+                <span>Why</span> A sandbox runs untrusted, generated code. Nothing worth stealing
+                should live there.
+              </p>
+            </article>
+            <article className="card">
+              <h3>MCP and CLI do</h3>
+              <p className="what">
+                Everything in Factory &mdash; humans and agents alike &mdash; happens over MCP or the
+                CLI. The web app is a window: watch Missions, read Journals, see what waits on you.
+              </p>
+              <p className="why">
+                <span>Why</span> One interface for people and agents means agents can do anything a
+                person can, and every action goes through the same door.
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────── Vision ───────────── */}
+      <section className="section vision">
+        <div className="wrap reveal center">
+          <p className="kicker">09 &middot; Where this goes</p>
+          <h2 className="vision-title">
+            Small teams of focused agents,
+            <br />
+            <span className="grad">governed like a company.</span>
+          </h2>
+          <p className="body narrow">
+            Software is only the first specialization. The same building blocks &mdash; a harness, a
+            sandbox, a clear role &mdash; can research, analyze data, run operations or produce
+            content. People set direction and make the calls; agents do the rest.
+          </p>
+        </div>
+      </section>
+
+      {/* ───────────── CTA ───────────── */}
+      <section className="section cta">
+        <div className="wrap reveal">
+          <div className="cta-card">
+            <p className="kicker">Your turn</p>
+            <h2 className="cta-title">
+              Try changing this page &mdash; however you want &mdash; <span className="grad">from Factory.</span>
+            </h2>
+            <p className="body">
+              This page lives in a Factory Project. Open the Factory MCP in your agent client and
+              ask for a Mission to change it. Then watch the Journal while a focused team does it.
+            </p>
+            <div className="terminal" aria-label="Example request">
+              <div className="terminal-bar" aria-hidden>
+                <i />
+                <i />
+                <i />
+                <span>Factory MCP</span>
+              </div>
+              <pre>
+                <span className="prompt">&gt;</span>
+                {" Start a Mission on the factory-demo Project: make the hero purple, add a section that welcomes the Vercel team, and send me the preview."}
+                <span className="caret" aria-hidden />
+              </pre>
+            </div>
+            <ol className="steps">
+              <li>
+                <b>1</b> Connect the Factory MCP
+              </li>
+              <li>
+                <b>2</b> Ask for a Mission
+              </li>
+              <li>
+                <b>3</b> Watch it ship
+              </li>
+            </ol>
+          </div>
+        </div>
+        <footer className="foot">Factory &middot; built with focus</footer>
+      </section>
+    </main>
+  );
+}
+
+function Wire({ label, horizontal, short }: { label: string; horizontal?: boolean; short?: boolean }) {
+  return (
+    <div className={`dg-link${horizontal ? " h" : ""}${short ? " short" : ""}`}>
+      <svg viewBox={horizontal ? "0 0 100 10" : "0 0 10 100"} preserveAspectRatio="none" aria-hidden>
+        {horizontal ? <line x1="0" y1="5" x2="100" y2="5" /> : <line x1="5" y1="0" x2="5" y2="100" />}
+      </svg>
+      <span>{label}</span>
+    </div>
   );
 }

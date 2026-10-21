@@ -1,6 +1,8 @@
 # factory-demo
 
-A small Next.js app that explains what Henry Factory is. It runs live inside a Factory Mission sandbox.
+A one-page, scroll-through landing that explains the ideas behind Factory: small, focused agents,
+harness + sandbox, roles, and governance. It runs live inside a Factory Mission sandbox — try
+asking a Mission to change it.
 
 ```sh
 pnpm install
