@@ -32,8 +32,74 @@ const entities = [
   },
 ];
 
-// The MCP endpoint that works today; it will move to api.factory.soyhenry.com.
-const FACTORY_MCP_URL = "https://henry-factory.vercel.app/api/mcp";
+const projects = [
+  {
+    name: "factory-demo",
+    stack: ["Next.js", "Node 22"],
+    vars: ["REPO_TOKEN", "ANALYTICS_KEY"],
+    people: 3,
+  },
+  {
+    name: "billing-api",
+    stack: ["Go", "Postgres"],
+    vars: ["DATABASE_URL", "STRIPE_KEY", "SENTRY_DSN"],
+    people: 5,
+  },
+  {
+    name: "data-pipelines",
+    stack: ["Python", "Chromium"],
+    vars: ["WAREHOUSE_URL", "S3_BUCKET"],
+    people: 2,
+  },
+];
+
+const missions = [
+  { goal: "Translate the hero to Spanish", status: "running", label: "running", progress: 60 },
+  { goal: "Add a FAQ about Missions", status: "waiting", label: "waiting on you", progress: 85 },
+  { goal: "Fix the mobile nav overflow", status: "done", label: "done", progress: 100 },
+  { goal: "Upgrade Next.js and rebuild", status: "running", label: "running", progress: 30 },
+];
+
+const sandboxFlow = [
+  { name: "Base image", note: "built by CI" },
+  { name: "Ephemeral builder", note: "declarative build" },
+  { name: "Snapshot", note: "the active revision" },
+  { name: "N Missions", note: "in parallel" },
+  { name: "Preview", note: "*.vercel.run" },
+];
+
+const sandboxFacts = [
+  {
+    title: "One microVM per Mission",
+    text: "Every Mission gets its own Firecracker microVM — its own kernel, file system and network, isolated from every other Mission.",
+  },
+  {
+    title: "A generic base image",
+    text: "CI publishes and registers a general-purpose runtime image. A Project can pin a variant, for example one that ships a browser.",
+  },
+  {
+    title: "Environments, built once",
+    text: "An ephemeral builder runs the Project’s declarative build, checks that no secret was baked in and takes a snapshot. That snapshot is the active Environment Revision.",
+  },
+  {
+    title: "Missions start in seconds",
+    text: "Each Mission is restored from that snapshot instead of being built from scratch — so many can start at once, side by side.",
+  },
+  {
+    title: "Sleep, never lose work",
+    text: "After an hour without activity (configurable) a sandbox goes to sleep, then resumes from its own snapshot right where it stopped. It can be kept awake for up to 72 hours.",
+  },
+  {
+    title: "Previews on a public URL",
+    text: "A dev server inside the sandbox is published as a public *.vercel.run URL — like the preview this page may be served from right now.",
+  },
+  {
+    title: "It cleans up after itself",
+    text: "Superseded snapshots are retired after 7 days, and orphan sandboxes are swept away.",
+  },
+];
+
+const FACTORY_MCP_URL ="https://api.factory.soyhenry.com/api/mcp";
 const FACTORY_CONNECT_DOCS = "https://api.factory.soyhenry.com/docs/connect";
 const FACTORY_WEB = "https://factory.soyhenry.com";
 
@@ -239,11 +305,54 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ───────────── Coordinator + Workers ───────────── */}
+      {/* ───────────── Each Project, its own world ───────────── */}
       <section className="section">
+        <div className="wrap">
+          <div className="reveal center">
+            <p className="kicker">05 &middot; Isolation by default</p>
+            <h2>
+              Each Project, <span className="grad">its own world.</span>
+            </h2>
+            <p className="body narrow">
+              A Project brings its own repository, runtime, variables and people. Every Mission
+              inherits all of it, and nothing leaks from one Project into another.
+            </p>
+          </div>
+          <ul className="projects reveal">
+            {projects.map((p) => (
+              <li key={p.name} className="project">
+                <div className="project-head">
+                  <h3>{p.name}</h3>
+                  <span>{p.people} people</span>
+                </div>
+                <div className="project-stack">
+                  {p.stack.map((s) => (
+                    <span key={s}>{s}</span>
+                  ))}
+                </div>
+                <dl className="project-vars">
+                  {p.vars.map((v) => (
+                    <div key={v}>
+                      <dt>{v}</dt>
+                      <dd aria-label="hidden value">••••••••</dd>
+                    </div>
+                  ))}
+                </dl>
+              </li>
+            ))}
+          </ul>
+          <p className="why-line center reveal">
+            <span>Why</span> Values stay masked &mdash; on the web, in Journals, in logs. A Mission
+            only sees what its Project gives it.
+          </p>
+        </div>
+      </section>
+
+      {/* ───────────── Coordinator + Workers ───────────── */}
+      <section className="section alt">
         <div className="wrap split">
           <div className="reveal">
-            <p className="kicker">05 &middot; Inside a Mission</p>
+            <p className="kicker">06 &middot; Inside a Mission</p>
             <h2>
               One Coordinator.
               <br />
@@ -279,10 +388,10 @@ export default function Home() {
       </section>
 
       {/* ───────────── Manager + Proxy ───────────── */}
-      <section className="section alt">
+      <section className="section">
         <div className="wrap">
           <div className="reveal center">
-            <p className="kicker">06 &middot; Above the Missions</p>
+            <p className="kicker">07 &middot; Above the Missions</p>
             <h2>
               A Manager per Project.
               <br />
@@ -329,11 +438,43 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ───────────── In parallel ───────────── */}
+      <section className="section alt">
+        <div className="wrap split">
+          <div className="reveal">
+            <p className="kicker">08 &middot; In parallel</p>
+            <h2>
+              Many Missions.
+              <br />
+              <span className="grad">One glance.</span>
+            </h2>
+            <p className="body">
+              Each Mission runs in its own sandbox, so several can move at once without stepping on
+              each other. You don&rsquo;t babysit them: you step in only when one is
+              <strong> waiting on you</strong>.
+            </p>
+          </div>
+          <ul className="board reveal" aria-label="Missions running in parallel">
+            {missions.map((m) => (
+              <li key={m.goal} className={`board-row ${m.status}`}>
+                <div className="board-top">
+                  <strong>{m.goal}</strong>
+                  <span className="board-status">{m.label}</span>
+                </div>
+                <div className="board-bar" aria-hidden>
+                  <i style={{ width: `${m.progress}%` }} />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* ───────────── Diagram ───────────── */}
       <section className="section">
         <div className="wrap">
           <div className="reveal center">
-            <p className="kicker">07 &middot; How it fits together</p>
+            <p className="kicker">09 &middot; How it fits together</p>
             <h2>Everyone talks in rooms.</h2>
             <p className="body narrow">
               Each Mission has a <strong>Journal</strong>, where the Coordinator, the Manager and
@@ -398,11 +539,95 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ───────────── Nothing depends on your machine ───────────── */}
+      <section className="section alt">
+        <div className="wrap split">
+          <div className="reveal">
+            <p className="kicker">10 &middot; Nothing depends on your machine</p>
+            <h2>
+              Close the laptop.
+              <br />
+              <span className="grad">The work goes on.</span>
+            </h2>
+            <p className="body">
+              Missions run in the cloud, not on your computer. Ask from anywhere, shut the lid, and
+              come back to a Journal that kept moving and a preview ready to review.
+            </p>
+          </div>
+          <div className="offline reveal" aria-label="Your laptop is off while the Mission keeps working in the cloud">
+            <div className="offline-laptop">
+              <svg viewBox="0 0 48 32" aria-hidden>
+                <rect x="8" y="3" width="32" height="21" rx="2" />
+                <path d="M3 28h42" />
+              </svg>
+              <div>
+                <strong>Your laptop</strong>
+                <span>off &middot; asleep</span>
+              </div>
+            </div>
+            <div className="offline-arrow" aria-hidden>
+              &darr;
+            </div>
+            <div className="offline-cloud">
+              <div className="offline-cloud-head">
+                <span className="demo-dot" aria-hidden /> Mission running in the cloud
+              </div>
+              <ol>
+                <li>
+                  <time>02:10</time> plan agreed with the Coordinator
+                </li>
+                <li>
+                  <time>02:24</time> change made, build passing
+                </li>
+                <li>
+                  <time>02:31</time> preview published
+                </li>
+                <li className="ask">
+                  <time>02:32</time> waiting on you: approve?
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ───────────── How we use Vercel Sandbox ───────────── */}
+      <section className="section">
+        <div className="wrap">
+          <div className="reveal center">
+            <p className="kicker">11 &middot; Under the hood</p>
+            <h2>
+              How we use <span className="grad">Vercel Sandbox.</span>
+            </h2>
+            <p className="body narrow">
+              An environment is built once, frozen as a snapshot and restored for every Mission
+              &mdash; so a fresh, isolated machine is always seconds away.
+            </p>
+          </div>
+          <ol className="flow reveal" aria-label="Base image, ephemeral builder, snapshot, many Missions in parallel, preview">
+            {sandboxFlow.map((s) => (
+              <li key={s.name}>
+                <strong>{s.name}</strong>
+                <span>{s.note}</span>
+              </li>
+            ))}
+          </ol>
+          <ul className="facts reveal">
+            {sandboxFacts.map((f) => (
+              <li key={f.title}>
+                <h3>{f.title}</h3>
+                <p>{f.text}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       {/* ───────────── Core + Web ───────────── */}
       <section className="section alt">
         <div className="wrap">
           <div className="reveal center">
-            <p className="kicker">08 &middot; Governance without friction</p>
+            <p className="kicker">12 &middot; Governance without friction</p>
             <h2>
               Core keeps the keys.
               <br />
@@ -434,13 +659,29 @@ export default function Home() {
               </p>
             </article>
           </div>
+          <div className="askwatch reveal" aria-label="You ask over MCP or the CLI, the agents do the work, you watch on the web">
+            <div className="askwatch-step">
+              <span>Ask</span>
+              <strong>MCP &middot; CLI</strong>
+            </div>
+            <div className="askwatch-roles">
+              <span>Proxy</span>
+              <span>Manager</span>
+              <span>Coordinator</span>
+              <span>Workers</span>
+            </div>
+            <div className="askwatch-step">
+              <span>Watch</span>
+              <strong>the web</strong>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* ───────────── Vision ───────────── */}
       <section className="section vision">
         <div className="wrap reveal center">
-          <p className="kicker">09 &middot; Where this goes</p>
+          <p className="kicker">13 &middot; Where this goes</p>
           <h2 className="vision-title">
             Small teams of focused agents,
             <br />
