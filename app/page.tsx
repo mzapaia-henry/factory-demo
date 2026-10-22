@@ -61,42 +61,11 @@ const missions = [
 ];
 
 const sandboxFlow = [
-  { name: "Base image", note: "built by CI" },
-  { name: "Ephemeral builder", note: "declarative build" },
-  { name: "Snapshot", note: "the active revision" },
-  { name: "N Missions", note: "in parallel" },
-  { name: "Preview", note: "*.vercel.run" },
-];
-
-const sandboxFacts = [
-  {
-    title: "One microVM per Mission",
-    text: "Every Mission gets its own Firecracker microVM — its own kernel, file system and network, isolated from every other Mission.",
-  },
-  {
-    title: "A generic base image",
-    text: "CI publishes and registers a general-purpose runtime image. A Project can pin a variant, for example one that ships a browser.",
-  },
-  {
-    title: "Environments, built once",
-    text: "An ephemeral builder runs the Project’s declarative build, checks that no secret was baked in and takes a snapshot. That snapshot is the active Environment Revision.",
-  },
-  {
-    title: "Missions start in seconds",
-    text: "Each Mission is restored from that snapshot instead of being built from scratch — so many can start at once, side by side.",
-  },
-  {
-    title: "Sleep, never lose work",
-    text: "After an hour without activity (configurable) a sandbox goes to sleep, then resumes from its own snapshot right where it stopped. It can be kept awake for up to 72 hours.",
-  },
-  {
-    title: "Previews on a public URL",
-    text: "A dev server inside the sandbox is published as a public *.vercel.run URL — like the preview this page may be served from right now.",
-  },
-  {
-    title: "It cleans up after itself",
-    text: "Superseded snapshots are retired after 7 days, and orphan sandboxes are swept away.",
-  },
+  { name: "Base image", note: "Generic runtime, published by CI", icon: "▣" },
+  { name: "Ephemeral builder", note: "Runs the Project’s build once", icon: "⚙" },
+  { name: "Snapshot", note: "Frozen, ready to restore", icon: "❄" },
+  { name: "Missions in parallel", note: "One microVM each, up in seconds", icon: "" },
+  { name: "Preview", note: "Live on a public *.vercel.run URL", icon: "↗" },
 ];
 
 const FACTORY_MCP_URL ="https://api.factory.soyhenry.com/api/mcp";
@@ -138,8 +107,13 @@ export default function Home() {
             tools they need to reach it.
           </p>
           <a className="demo-badge" href="#try-it">
-            <span className="demo-dot" aria-hidden />
-            This is a live demo page &mdash; built to be changed. Ask Factory to modify it.
+            <span className="demo-tag">
+              <span className="demo-dot" aria-hidden />
+              Live demo
+            </span>
+            <span className="demo-text">
+              This page is built to be changed. Ask Factory to modify it.
+            </span>
             <span className="demo-arrow" aria-hidden>
               &darr;
             </span>
@@ -599,27 +573,30 @@ export default function Home() {
             <h2>
               How we use <span className="grad">Vercel Sandbox.</span>
             </h2>
-            <p className="body narrow">
-              An environment is built once, frozen as a snapshot and restored for every Mission
-              &mdash; so a fresh, isolated machine is always seconds away.
-            </p>
+            <p className="body narrow">Built once, restored for every Mission.</p>
           </div>
-          <ol className="flow reveal" aria-label="Base image, ephemeral builder, snapshot, many Missions in parallel, preview">
-            {sandboxFlow.map((s) => (
-              <li key={s.name}>
-                <strong>{s.name}</strong>
-                <span>{s.note}</span>
+          <ol className="sbx reveal" aria-label="Base image, ephemeral builder, snapshot, many Missions in parallel, preview">
+            {sandboxFlow.map((s, i) => (
+              <li key={s.name} className={`sbx-step${s.icon ? "" : " many"}`}>
+                <div className="sbx-node">
+                  <span className="sbx-num">{i + 1}</span>
+                  {s.icon ? (
+                    <span className="sbx-icon" aria-hidden>
+                      {s.icon}
+                    </span>
+                  ) : (
+                    <span className="sbx-lanes" aria-hidden>
+                      {[0, 1, 2, 3].map((l) => (
+                        <i key={l} />
+                      ))}
+                    </span>
+                  )}
+                  <strong>{s.name}</strong>
+                </div>
+                <span className="sbx-note">{s.note}</span>
               </li>
             ))}
           </ol>
-          <ul className="facts reveal">
-            {sandboxFacts.map((f) => (
-              <li key={f.title}>
-                <h3>{f.title}</h3>
-                <p>{f.text}</p>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
